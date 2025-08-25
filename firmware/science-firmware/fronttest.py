@@ -454,15 +454,35 @@ def karuzela_cmd(action):
     print(f"[KARUZELA] {action}")
 
 trimer_frame = ttk.Frame(frame_karuzela, style="TFrame")
-trimer_frame.pack(side="bottom", pady=5)
+trimer_frame.pack(side="bottom", pady=5, padx = 5)
+
+def confirm_and_reset():
+    if messagebox.askyesno("Potwierdzenie", "Czy na pewno chcesz zrestartować karuzelę?"):
+        publish_science_command(drill=0, elev=0, conv=0, res_seq=0, rotate=0, reset=1)
+
+tk.Button(
+    frame_karuzela,
+    text="Reset",
+    bg="#C85D5D",
+    fg="white",
+    width=5,
+    height=1,
+    anchor="n",
+    command=confirm_and_reset
+).pack(side="left", padx=10)
+
+# Suwak do prędkości podnoszenia
+trim_scale = tk.Scale(frame_karuzela, from_=0, to=2666, orient="horizontal", label="Prędkość", bg="#2a2a2a", fg="white")
+trim_scale.pack(fill="x", pady=3)
 
 
 # tk.Button(frame_karuzela, text="⟲", bg="#555555", fg="white", width=6, height=2,
 #           command=lambda: karuzela_cmd("obrot_lewo")).pack(side="left", padx=3)
-tk.Button(frame_karuzela, text="Reset", bg="#555555", fg="white", width=6, height=2,
-          command=lambda: publish_science_command(drill=0, elev=0, conv=0, res_seq=0,rotate=0,reset = 1)).pack(side="left", padx=3)
-tk.Button(frame_karuzela, text="⟳", bg="#555555", fg="white", width=6, height=2,
-    command=lambda: publish_science_command(drill=0, elev=0, conv=0, res_seq=0,rotate=50,reset = 0)).pack(side="left", padx=3)
+
+tk.Button(frame_karuzela, text="⟲ trim", bg="#555555", fg="white", width=10, height=2,
+          command=lambda: publish_science_command(drill=0, elev=0, conv=0, res_seq=0,rotate=16000-trim_scale.get(),reset = 0)).pack(side="left", padx=5)
+tk.Button(frame_karuzela, text="⟳ trim", bg="#555555", fg="white", width=10, height=2,
+    command=lambda: publish_science_command(drill=0, elev=0, conv=0, res_seq=0,rotate=trim_scale.get(),reset = 0)).pack(side="left", padx=5)
 
 
 # Control panel inside frame_sterowanie
